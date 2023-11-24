@@ -5,7 +5,8 @@ const userController = require("../controllers/user-controller");
 
 
 router.route("/login")
-    .post(userController.test)
+    .post(userController.loginFunc)
+    .get(userController.authorizeUser)
 
 
 module.exports = router;

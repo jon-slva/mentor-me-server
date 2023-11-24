@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 require('dotenv').config();
-const mentorsRoute = require('./routes/mentors-routes');
+const mentorsRoutes = require('./routes/mentors-routes');
+const userRoutes = require('./routes/user-routes');
 
 const PORT = process.env.PORT;
 
@@ -20,8 +21,10 @@ app.get('/', (req, res) => {
     res.json({ message: 'Hello, world!' });
 });
 
-app.use('/api/mentors', mentorsRoute);
-// app.use('/', indexRoute);
+app.use('/api/mentors', mentorsRoutes);
+
+app.use("/api/users", userRoutes);
+
 
 // Start the server
 app.listen(PORT, () => {
