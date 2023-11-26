@@ -1,13 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const mentorsController = require("../controllers/mentors-controller");
-// const usersController = require("../controllers/users-controller");
 
 
 router.route("/")
-    .get(mentorsController.search)
-    .post(mentorsController.addUser)
-    ;
+    .get(mentorsController.search);
 
 
 

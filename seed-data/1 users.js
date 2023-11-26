@@ -124,7 +124,7 @@ module.exports = [
         phone: '555-555-5555',
         can_text: false,
         pic: 'https://maybach-guitars.de/wp-content/uploads/2022/06/Paul-Davids-with-Salmon.jpg',
-        social_ig: 'https://instagram.com/pauldavidsguitar',
+        social_ig: 'pauldavidsguitar',
         social_facebook: 'https://www.facebook.com/pauldavids',
         social_soundcloud: null,
         social_youtube: 'https://www.youtube.com/@PaulDavids',

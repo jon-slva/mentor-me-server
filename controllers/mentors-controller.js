@@ -36,6 +36,7 @@ const knex = require('knex')(require('../knexfile'));
 const search = async (req, res) => {
     try {
         const searchQuery = req.query.s; // this is needed to capture the search query ?s=
+        console.log(req.query)
 
         // This returns all interests and subjects with the searchQuery
         const interestsWithSubjects = await knex('interests')
@@ -47,23 +48,45 @@ const search = async (req, res) => {
             .select('interests.*', 'subjects.name as subject_name');
 
         // users whose subjects and interests correspond with the search query
-        const mentors = await knex('users')
+        const mentorsData = await knex('users')
             .leftJoin('user_interests', 'users.id', '=', 'user_interests.user_id')
             .leftJoin('interests', 'user_interests.interests_id', '=', 'interests.id')
             .leftJoin('user_subjects', 'users.id', '=', 'user_subjects.user_id')
             .leftJoin('subjects', 'user_subjects.subject_id', '=', 'subjects.id')
             .leftJoin('mentors', 'users.id', '=', 'mentors.user_id')
-            .where(function () {
-                this.whereNotNull('mentors.id') // Filter out users without mentors
-                    .andWhere(function () {
-                        this.where('interests.name', 'like', `%${searchQuery}%`)
-                            .orWhere('subjects.name', 'like', `%${searchQuery}%`);
-                    });
+            .whereNotNull('mentors.id')
+            .andWhere(function () {
+                this.where('interests.name', 'like', `%${searchQuery}%`)
+                    .orWhere('subjects.name', 'like', `%${searchQuery}%`);
             })
-            .select('users.*', 'mentors.id as mentor_id')  // Include mentor_id
-            .distinct();
+            .groupBy('users.id') // Group by user ID to aggregate subjects and interests
+            .select(
+                'users.*',
+                'mentors.id as mentor_id',
+                knex.raw('JSON_ARRAYAGG(JSON_OBJECT("id", subjects.id, "name", subjects.name)) as subjects'),
+                knex.raw('JSON_ARRAYAGG(JSON_OBJECT("id", interests.id, "name", interests.name)) as interests')
+            );
 
-        const response = { mentors, interestsWithSubjects };
+        function removeDuplicatesFromMentors(mentors) {
+            return mentorsData.map((mentor) => {
+                const uniqueSubjects = Array.from(new Set(mentor.subjects.map((subject) => JSON.stringify(subject))));
+                const uniqueInterests = Array.from(new Set(mentor.interests.map((interest) => JSON.stringify(interest))));
+
+                mentor.subjects = uniqueSubjects.map((subject) => JSON.parse(subject));
+                mentor.interests = uniqueInterests.map((interest) => JSON.parse(interest));
+
+                return mentor;
+            });
+        }
+
+
+        // Apply the function to remove duplicates
+        const mentors = removeDuplicatesFromMentors(mentorsData);
+
+        // Now mentorsWithoutDuplicates contains mentors without duplicate subjects and interests
+
+
+        const response = { mentors, interestsWithSubjects, searchQuery };
 
         return res.status(200).send(response);
     } catch (err) {
@@ -71,98 +94,13 @@ const search = async (req, res) => {
     }
 };
 
-const addUser = async (req, res) => {
-    const reqBody = req.body;
-    const newUser = {
-        first_name: reqBody.first_name,
-        last_name: reqBody.last_name,
-        password: reqBody.password,
-        alias: reqBody.alias,
-        street: reqBody.street,
-        city: reqBody.city,
-        state: reqBody.state,
-        zip: reqBody.zip,
-        country: reqBody.country,
-        lat: reqBody.lat,
-        long: reqBody.long,
-        email: reqBody.email,
-        phone: reqBody.phone,
-        can_text: reqBody.can_text,
-        pic: reqBody.pic,
-        social_ig: reqBody.social_ig,
-        social_facebook: reqBody.social_facebook,
-        social_soundcloud: reqBody.social_soundcloud,
-        social_youtube: reqBody.social_youtube,
-        social_linkedin: reqBody.social_linkedin,
-        portfolioLink1: reqBody.portfolioLink1,
-        portfolioLink2: reqBody.portfolioLink2,
-        portfolioLink3: reqBody.portfolioLink3,
-        bio: reqBody.bio,
-    };
 
-    const userInterests = reqBody.user_interests || [];
-    const userSubjects = reqBody.user_subjects || [];
-
-    try {
-        await knex.transaction(async (trx) => {
-            // Step 1: Insert the user into the users table
-            const [userId] = await trx('users').insert(newUser);
-
-            // Step 2: Check if the user is a mentor (based on your stipulation)
-            if (reqBody.is_mentor) {
-                // Step 3: Insert the mentor entry into the mentors table
-                await trx('mentors').insert({
-                    user_id: userId,
-                    // mentor-specific fields...
-                });
-            } else {
-                await trx('mentees').insert({
-                    user_id: userId,
-                    // mentee-specific fields...
-                });
-            }
-
-            // Step 4: Insert user interests into user_interests table
-            await Promise.all(
-                userInterests.map(async (interest) => {
-                    await trx('user_interests').insert({
-                        user_id: userId,
-                        interests_id: interest.id,
-                        // interest_name: interest.name,
-                    });
-                })
-            );
-
-            // Step 5: Insert user subjects into user_subjects table
-            await Promise.all(
-                userSubjects.map(async (subject) => {
-                    await trx('user_subjects').insert({
-                        user_id: userId,
-                        subject_id: subject.id,
-                        // subject_name: subject.name,
-                    });
-                })
-            );
-
-            // If all steps are successful, commit the transaction
-            await trx.commit();
-
-            // Send a success response to the client
-            res.json({ success: true });
-        });
-    } catch (error) {
-        // If an error occurs, handle it and send an error response
-        console.error('Error:', error.message);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
 
 
 
 
 module.exports = {
     search,
-    addUser
 };
 
 

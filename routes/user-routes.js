@@ -8,5 +8,8 @@ router.route("/login")
     .post(userController.loginFunc)
     .get(userController.authorizeUser)
 
+router.route("/signup")
+    .post(userController.addUser)
+
 
 module.exports = router;
