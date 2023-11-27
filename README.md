@@ -60,11 +60,7 @@ npm install
 - SECRET_KEY=7452aods8g6hf8ifajysgdf*hg41a5117876
 - API_KEY=242a019cc0bd462791509c195a8bef72
 
-4. To create a accounts you need to configure the transporter body from nodeMailer, line 9 in signup.js.
-Documentation in - https://github.com/nodemailer/nodemailer
-
-
-5. Run the server:
+4. Run the server:
 ```bash
 npm start
 ```
