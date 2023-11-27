@@ -8,6 +8,7 @@
 - [Installation](#installation)
 - [Technologies Used](#technologies-used)
 - [Endpoints](#endpoints)
+- [APIs](#apis)
 - [Database](#database)
 - [Contributing](#contributing)
 
@@ -57,8 +58,8 @@ npm install
 - API_URL=http://localhost:8080
 - DB_NAME=mentor_me
 
-- SECRET_KEY=7452aods8g6hf8ifajysgdf*hg41a5117876
-- API_KEY=242a019cc0bd462791509c195a8bef72
+- SECRET_KEY=(insert any random characters you wish here)
+- API_KEY=(aquire from GeoApify website - https://www.geoapify.com/geocoding-api)
 
 4. Run the server:
 ```bash
@@ -72,6 +73,9 @@ npm start
 - **POST /api/users/signup:** Signup endpoint to add new users
 - **GET /api/mentors:** Search results of users in the database who are mentors
 
+## APIs
+
+Mentor Me uses the GeoApify API to translate user addresses into rough map coordinates. This assists with the visualization of connecting users on the 3D globe.
 
 ## Database
 
