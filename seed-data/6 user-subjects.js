@@ -7,4 +7,9 @@ module.exports = [
     { user_id: 6, subject_id: 2 }, // Luthier
     { user_id: 7, subject_id: 1 }, // Learning Guitar
     { user_id: 8, subject_id: 1 }, // Learning Guitar
+    { user_id: 9, subject_id: 1 }, // Learning Guitar
+    { user_id: 10, subject_id: 1 }, // Learning Guitar
+    { user_id: 11, subject_id: 1 }, // Learning Guitar
+    { user_id: 12, subject_id: 2 }, // Luthier
+    { user_id: 13, subject_id: 1 }, // Learning Guitar
 ];

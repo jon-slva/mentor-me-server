@@ -6,6 +6,8 @@ const mentorsController = require("../controllers/mentors-controller");
 router.route("/")
     .get(mentorsController.search);
 
+router.route("/mentor/:mentorId")
+    .get(mentorsController.get);
 
 
 

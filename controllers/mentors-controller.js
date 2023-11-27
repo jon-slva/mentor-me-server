@@ -1,41 +1,10 @@
 const express = require('express');
-const axios = require('axios');
 const knex = require('knex')(require('../knexfile'));
 
-// const ollieExample = async (req, res) => {
-//     try {
-//         const { sort_by, order_by, s } = req.query;
-//         if (!s) {
-//             // https://knexjs.org/guide/query-builder.html#decrement
-//             if (sort_by) {
-//                 if (!order_by || order_by === "asc") {
-//                     const data = await knex("warehouses").orderBy(sort_by, "asc");
-//                     return res.status(200).json(data);
-//                 }
-//                 const data = await knex("warehouses").orderBy(sort_by, "desc");
-//                 return res.status(200).json(data);
-//             }
-//             const data = await knex.select('*').from('warehouses');
-//             return res.status(200).json(data);
-//         }
-//         if (sort_by) {
-//             if (!order_by || order_by === "asc") {
-//                 const data = await knex("warehouses").whereILike("warehouse_name", `%${s}%`).orWhereILike("address", `%${s}%`).orWhereILike("contact_name", `%${s}%`).orWhereILike("contact_email", `%${s}%`).orWhereILike("contact_phone", `%${s}%`).orWhereILike("city", `%${s}%`).orWhereILike("country", `%${s}%`).orderBy(sort_by, "asc");
-//                 return res.status(200).json(data);
-//             }
-//             const data = await knex("warehouses").whereILike("warehouse_name", `%${s}%`).orWhereILike("address", `%${s}%`).orWhereILike("contact_name", `%${s}%`).orWhereILike("contact_email", `%${s}%`).orWhereILike("contact_phone", `%${s}%`).orWhereILike("city", `%${s}%`).orWhereILike("country", `%${s}%`).orderBy(sort_by, "desc");
-//             return res.status(200).json(data);
-//         }
-//         const data = await knex.select('*').from('warehouses').whereILike("warehouse_name", `%${s}%`).orWhereILike("address", `%${s}%`).orWhereILike("contact_name", `%${s}%`).orWhereILike("contact_email", `%${s}%`).orWhereILike("contact_phone", `%${s}%`).orWhereILike("city", `%${s}%`).orWhereILike("country", `%${s}%`);
-//         return res.status(200).json(data);
-//     } catch (err) {
-//         return res.status(500).send(`Error retrieving Warehouses: ${err}`);
-//     }
-// };
 
 const search = async (req, res) => {
     try {
-        const searchQuery = req.query.s; // this is needed to capture the search query ?s=
+        const searchQuery = req.query.s;
         console.log(req.query)
 
         // This returns all interests and subjects with the searchQuery
@@ -79,12 +48,7 @@ const search = async (req, res) => {
             });
         }
 
-
-        // Apply the function to remove duplicates
         const mentors = removeDuplicatesFromMentors(mentorsData);
-
-        // Now mentorsWithoutDuplicates contains mentors without duplicate subjects and interests
-
 
         const response = { mentors, interestsWithSubjects, searchQuery };
 
@@ -95,12 +59,6 @@ const search = async (req, res) => {
 };
 
 
-
-
-
-
 module.exports = {
     search,
 };
-
-

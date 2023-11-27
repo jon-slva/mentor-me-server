@@ -6,52 +6,25 @@ const jwt = require("jsonwebtoken");
 require('dotenv').config();
 
 
-// async function updatePasswords() {
-//     try {
-//         const users = await knex('users');
-
-//         for (const user of users) {
-//             const hashedPassword = bcrypt.hashSync(user.password, 10);
-//             await knex('users').where({ id: user.id }).update({ password: hashedPassword });
-//         }
-
-//         console.log('Passwords updated successfully');
-//     } catch (error) {
-//         console.error('Error updating passwords:', error);
-//     }
-// }
-
-// updatePasswords();
-
 const loginFunc = async (req, res) => {
     const { alias, password } = req.body;
     if (!alias || !password) {
         return res.status(400).send("Please enter all required fields");
     }
 
-    // find the user
     const user = await knex("users")
         .where({ alias: alias }).first();
 
-    // could not find user email
     if (!user) {
         return res.status(400).send("Invalid email");
     }
 
-    // check passwrod
     const isPasswordCorrect = bcrypt.compareSync(password, user.password);
 
-    console.log('Stored Password:', user.password);
-    // console.log('Hashed Password:', bcrypt.hashSync(password, 10));
-
-
-    // console.log(isPasswordCorrect)
-    // password was incorrect
     if (!isPasswordCorrect) {
         return res.status(400).send("Invalid password");
     }
 
-    // generate a token
     const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
         expiresIn: "24h",
     });
@@ -59,16 +32,12 @@ const loginFunc = async (req, res) => {
     res.json({ token });
 };
 
-// ## GET /api/users/current
-// -   Gets information about the currently logged in user.
-// -   If no valid JWT is provided, this route will respond with 401 Unauthorized.
-// -   Expected headers: { Authorization: "Bearer JWT_TOKEN_HERE" }
+
 const authorizeUser = async (req, res) => {
     if (!req.headers.authorization) {
         return res.status(401).send("Please login");
     }
 
-    // parse the bearer token
     const authHeader = req.headers.authorization;
     const authToken = authHeader.split(" ")[1];
 
@@ -89,13 +58,11 @@ const authorizeUser = async (req, res) => {
 
 
 // Signup
-
 const addUser = async (req, res) => {
     const reqBody = req.body;
 
     const address = `${reqBody.street}, ${reqBody.city}, ${reqBody.country}`;
 
-    // Convert Address to LAT/LONG
     try {
         const encodedAddress = encodeURIComponent(address);
 
@@ -105,7 +72,6 @@ const addUser = async (req, res) => {
         const lat = response.data.features[0].geometry.coordinates[1].toFixed(4);
         const lon = response.data.features[0].geometry.coordinates[0].toFixed(4);
 
-        // Process the response data
         const newUser = {
             first_name: reqBody.first_name,
             last_name: reqBody.last_name,
@@ -173,7 +139,6 @@ const addUser = async (req, res) => {
                     await trx('user_subjects').insert({
                         user_id: userId,
                         subject_id: subject.id,
-                        // subject_name: subject.name,
                     });
                 })
             );
@@ -190,9 +155,6 @@ const addUser = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
-
-
-
 
 
 module.exports = {
