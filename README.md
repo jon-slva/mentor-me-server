@@ -33,9 +33,7 @@ Mentor Me is a full stack application that connects curious learners with mentor
 - Axios
 - MySQL
 - JWT
-- React
 - bcrypt
-- Sass
 - knex
 - cors
 
