@@ -7,7 +7,7 @@ router.route("/")
     .get(mentorsController.search);
 
 router.route("/mentor/:mentorId")
-    .get(mentorsController.get);
+// .get(mentorsController.get);
 
 
 

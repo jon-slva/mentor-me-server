@@ -12,4 +12,5 @@ module.exports = [
     { user_id: 11, subject_id: 1 }, // Learning Guitar
     { user_id: 12, subject_id: 2 }, // Luthier
     { user_id: 13, subject_id: 1 }, // Learning Guitar
+    { user_id: 14, subject_id: 1 }, // Learning Guitar
 ];
