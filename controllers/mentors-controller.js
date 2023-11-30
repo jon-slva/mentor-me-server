@@ -59,6 +59,57 @@ const search = async (req, res) => {
 };
 
 
+const getMentor = async (req, res) => {
+    const { mentorId } = req.params;
+
+    try {
+        const mentorData = await knex('mentors')
+            .where('mentors.id', mentorId)
+            .leftJoin('users', 'mentors.user_id', '=', 'users.id')
+            .leftJoin('user_interests', 'users.id', '=', 'user_interests.user_id')
+            .leftJoin('interests', 'user_interests.interests_id', '=', 'interests.id')
+            .leftJoin('user_subjects', 'users.id', '=', 'user_subjects.user_id')
+            .leftJoin('subjects', 'user_subjects.subject_id', '=', 'subjects.id')
+            .select(
+                'users.*',
+                'mentors.id as mentor_id',
+                knex.raw('JSON_ARRAYAGG(JSON_OBJECT("id", subjects.id, "name", subjects.name)) as subjects'),
+                knex.raw('JSON_ARRAYAGG(JSON_OBJECT("id", interests.id, "name", interests.name)) as interests')
+            )
+            .groupBy('users.id'); // Assuming users.id is your primary key
+
+        function removeDuplicatesFromMentors(mentors) {
+            return mentors.map((mentor) => {
+                const uniqueSubjects = Array.from(new Set(mentor.subjects.map((subject) => JSON.stringify(subject))));
+                const uniqueInterests = Array.from(new Set(mentor.interests.map((interest) => JSON.stringify(interest))));
+
+                mentor.subjects = uniqueSubjects.map((subject) => JSON.parse(subject));
+                mentor.interests = uniqueInterests.map((interest) => JSON.parse(interest));
+
+                return mentor;
+            });
+        }
+
+        const mentors = removeDuplicatesFromMentors(mentorData);
+
+        return res.status(200).json({ mentors });
+    } catch (error) {
+        console.error('Error fetching mentor data:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+
+
+// Usage example:
+// const mentorId = 1; // Replace with the actual mentor_id you want to retrieve
+// const mentorData = await getMentorData(mentorId);
+// console.log(mentorData);
+
+
+
 module.exports = {
     search,
+    getMentor,
 };

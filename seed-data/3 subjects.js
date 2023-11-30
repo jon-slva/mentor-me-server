@@ -1,5 +1,5 @@
 module.exports = [
-    { id: 1, name: 'Learning Guitar' },
+    { id: 1, name: 'Guitarist' },
     { id: 2, name: 'Luthier' },
     { id: 3, name: 'Traditional Art' },
     { id: 4, name: '2D Animation' },
