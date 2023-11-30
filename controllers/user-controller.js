@@ -44,7 +44,7 @@ const authorizeUser = async (req, res) => {
     try {
         // verify the token (will give us information we stored in properties when the token was created, ex. id property)
         const decoded = jwt.verify(authToken, process.env.JWT_KEY);
-
+        console.log(decoded)
         // respond with appropriate user data
         const user = await knex("users").where({ id: decoded.id }).first();
 

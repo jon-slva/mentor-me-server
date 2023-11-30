@@ -9,7 +9,4 @@ router.route("/:menteeId")
     .get(menteesController.getMentee);
 
 
-// router.route("/").get(menteesController.index).post(menteesController.add)
-
-// router.route("/:id").delete(warehouseController.remove).put(warehouseController.update).get(warehouseController.findOne);
-// router.route("/:id/inventories").get(warehouseController.whInventories);
+module.exports = router;
