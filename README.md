@@ -8,6 +8,7 @@
 - [Installation](#installation)
 - [Technologies Used](#technologies-used)
 - [Endpoints](#endpoints)
+- [APIs](#apis)
 - [Database](#database)
 - [Contributing](#contributing)
 
@@ -33,9 +34,7 @@ Mentor Me is a full stack application that connects curious learners with mentor
 - Axios
 - MySQL
 - JWT
-- React
 - bcrypt
-- Sass
 - knex
 - cors
 
@@ -59,14 +58,10 @@ npm install
 - API_URL=http://localhost:8080
 - DB_NAME=mentor_me
 
-- SECRET_KEY=7452aods8g6hf8ifajysgdf*hg41a5117876
-- API_KEY=242a019cc0bd462791509c195a8bef72
+- SECRET_KEY=(insert any random characters you wish here)
+- API_KEY=(aquire from GeoApify website - https://www.geoapify.com/geocoding-api)
 
-4. To create a accounts you need to configure the transporter body from nodeMailer, line 9 in signup.js.
-Documentation in - https://github.com/nodemailer/nodemailer
-
-
-5. Run the server:
+4. Run the server:
 ```bash
 npm start
 ```
@@ -78,6 +73,9 @@ npm start
 - **POST /api/users/signup:** Signup endpoint to add new users
 - **GET /api/mentors:** Search results of users in the database who are mentors
 
+## APIs
+
+Mentor Me uses the GeoApify API to translate user addresses into rough map coordinates. This assists with the visualization of connecting users on the 3D globe.
 
 ## Database
 

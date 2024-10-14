@@ -9,5 +9,4 @@ router.route("/")
 router.route("/:mentorId")
     .get(mentorsController.getMentor);
 
-
 module.exports = router;
